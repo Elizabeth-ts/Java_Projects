@@ -14,23 +14,49 @@ import java.util.Objects;
  */
 public class User implements Serializable {
 
-    private static long userIDIncrement = 0;
-    private final long userId;
-    private final String userName;
+    private long userId;
+    private String userName;
     private int userAge;
     private double userHeight, userWeight;
+
+    public User(String userName) {
+        this.userName = userName;
+        userId = 0;
+    }
 
     public User(String userName, int userAge, double userHeight, double userWeight) {
         this.userName = userName;
         this.userAge = userAge;
         this.userHeight = userHeight;
         this.userWeight = userWeight;
-        userIDIncrement++;
-        this.userId = userIDIncrement;
     }
 
-    public static long getUserIDIncrement() {
-        return userIDIncrement;
+    public User(long userId, String userName, int userAge, double userHeight, double userWeight) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userAge = userAge;
+        this.userHeight = userHeight;
+        this.userWeight = userWeight;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserAge(int userAge) {
+        this.userAge = userAge;
+    }
+
+    public void setUserHeight(double userHeight) {
+        this.userHeight = userHeight;
+    }
+
+    public void setUserWeight(double userWeight) {
+        this.userWeight = userWeight;
     }
 
     public long getUserId() {
@@ -45,24 +71,12 @@ public class User implements Serializable {
         return userAge;
     }
 
-    public void setUserAge(int userAge) {
-        this.userAge = userAge;
-    }
-
     public double getUserHeight() {
         return userHeight;
     }
 
-    public void setUserHeight(double userHeight) {
-        this.userHeight = userHeight;
-    }
-
     public double getUserWeight() {
         return userWeight;
-    }
-
-    public void setUserWeight(double userWeight) {
-        this.userWeight = userWeight;
     }
 
     @Override
@@ -93,7 +107,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "userName=" + userName + ", userAge=" + userAge + ", userHeight=" + userHeight + ", userWeight=" + userWeight + '}';
+        return "User{" + "userId=" + userId + ", userName=" + userName + ", userAge=" + userAge + ", userHeight=" + userHeight + ", userWeight=" + userWeight + '}';
     }
 
 }

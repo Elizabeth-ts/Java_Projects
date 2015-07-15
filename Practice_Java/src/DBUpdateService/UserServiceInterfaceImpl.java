@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,13 +48,17 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
     public void addUser(User newUser) throws RemoteException {
         try {
             preparedStat = jdbcConnection.prepareStatement(QUERY_INSERT);
-            preparedStat.setLong(COLUMN_INDEX_USERID, newUser.getUserId());
             preparedStat.setString(COLUMN_INDEX_USERNAME, newUser.getUserName());
             preparedStat.setInt(COLUMN_INDEX_USERAGE, newUser.getUserAge());
             preparedStat.setDouble(COLUMN_INDEX_USERHEIGHT, newUser.getUserHeight());
             preparedStat.setDouble(COLUMN_INDEX_USERWEIGHT, newUser.getUserWeight());
             preparedStat.executeUpdate();
             jdbcConnection.commit();
+            jdbcResultSet = jdbcStatement.executeQuery("select last_insert_id() as last_id");
+            if (jdbcResultSet.next()) {
+                newUser.setUserId(jdbcResultSet.getInt("last_id"));
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -76,18 +81,24 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
     }
 
     @Override
-    public ResultSet getAllUser() throws RemoteException {
+    public ArrayList<User> getAllUser() throws RemoteException {
+        ArrayList<User> list = new ArrayList<>();
         try {
             preparedStat = jdbcConnection.prepareStatement(QUERY_SELECT);
             jdbcResultSet = preparedStat.executeQuery();
             while (jdbcResultSet.next()) {
                 System.out.println(jdbcResultSet.getString(TABLE_COLUMN_NAME_USERNAME));
+                list.add(new User(jdbcResultSet.getLong(TABLE_COLUMN_NAME_USERID),
+                        jdbcResultSet.getString(TABLE_COLUMN_NAME_USERNAME),
+                        jdbcResultSet.getInt(TABLE_COLUMN_NAME_USERAGE),
+                        jdbcResultSet.getDouble(TABLE_COLUMN_NAME_USERHEIGHT),
+                        jdbcResultSet.getDouble(TABLE_COLUMN_NAME_USERWEIGHT)));
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            return jdbcResultSet;
+            return list;
         }
     }
 

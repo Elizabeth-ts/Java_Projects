@@ -8,7 +8,7 @@ package DBUpdateService;
 import domain.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -39,6 +39,6 @@ public interface UserServiceInterface extends Remote {
      * @return set of user data
      * @throws java.rmi.RemoteException
      */
-    public ResultSet getAllUser() throws RemoteException;
+    public ArrayList<User> getAllUser() throws RemoteException;
 
 }
