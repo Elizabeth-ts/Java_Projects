@@ -1,0 +1,37 @@
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"  
+            "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans >
+
+    <bean id="orderProcessor" class="npu.services.OrderProcessor">
+        <property name="acctService" ref="acctServiceIntlRules" />
+        <property name="invService" ref="invServiceImpl" />
+    </bean>
+        
+    <!-- add your bean definitions here! -->
+    <bean id="acctServiceIntlRules" class="npu.services.AccountingServiceIntlRules" >
+        <property name="taxService" ref="salesTaxService" /> 
+    </bean>
+
+    <bean id="invServiceImpl" class="npu.services.InventoryServiceImpl">
+        
+    </bean>
+    
+    <bean id="salesTaxService" class="npu.services.TaxServiceForSales" autowire="byName">
+        <!--        <property name="stateTaxMap" ref="stateTaxMap" /> -->
+    </bean>
+
+    <bean id="stateTaxMap"
+          class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="CA" value="0.0875" />
+                <entry key="HI" value="0.0175" />
+                <entry key="CO" value="0.1075" />
+                <entry key="IL" value="0.0475" />
+                <entry key="KS" value="0.0575" />
+            </map>
+        </property>
+    </bean>
+    
+</beans>
