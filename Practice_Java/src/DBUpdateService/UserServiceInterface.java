@@ -22,7 +22,7 @@ public interface UserServiceInterface extends Remote {
      * @param newUser
      * @throws java.rmi.RemoteException
      */
-    public void addUser(User newUser) throws RemoteException ;
+    public void addUser(User newUser) throws RemoteException;
 
     /**
      * Remove User by giving an User object
@@ -31,7 +31,7 @@ public interface UserServiceInterface extends Remote {
      * @return remove success or not
      * @throws java.rmi.RemoteException
      */
-    public boolean removeUser(User userToBeRemove) throws RemoteException ;
+    public boolean removeUser(User userToBeRemove) throws RemoteException;
 
     /**
      * return the whole database data
@@ -39,6 +39,6 @@ public interface UserServiceInterface extends Remote {
      * @return set of user data
      * @throws java.rmi.RemoteException
      */
-    public ResultSet getAllUser() throws RemoteException ;
+    public ResultSet getAllUser() throws RemoteException;
 
 }

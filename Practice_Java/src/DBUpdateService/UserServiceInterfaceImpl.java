@@ -65,6 +65,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
             preparedStat = jdbcConnection.prepareStatement(QUERY_DROP_RECORD);
             preparedStat.setLong(1, userToBeRemove.getUserId());
             preparedStat.execute();
+            jdbcConnection.commit();
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -78,11 +79,15 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
     public ResultSet getAllUser() throws RemoteException {
         try {
             preparedStat = jdbcConnection.prepareStatement(QUERY_SELECT);
-            return preparedStat.executeQuery();
+            jdbcResultSet = preparedStat.executeQuery();
+            while (jdbcResultSet.next()) {
+                System.out.println(jdbcResultSet.getString(TABLE_COLUMN_NAME_USERNAME));
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            return null;
+            return jdbcResultSet;
         }
     }
 
