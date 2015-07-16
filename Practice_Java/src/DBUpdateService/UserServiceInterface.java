@@ -5,6 +5,7 @@
  */
 package DBUpdateService;
 
+import domain.StepRecord;
 import domain.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -41,4 +42,19 @@ public interface UserServiceInterface extends Remote {
      */
     public ArrayList<User> getAllUser() throws RemoteException;
 
+    /**
+     *
+     * @param step
+     * @return success or not
+     * @throws RemoteException
+     */
+    public boolean insertNewRecord(StepRecord step) throws RemoteException;
+
+    /**
+     *
+     * @param step
+     * @return StepRecord object contains new total amount of step count inside
+     * @throws RemoteException
+     */
+    public StepRecord searchStepTotalForUserWithinPeriod(StepRecord step) throws RemoteException;
 }

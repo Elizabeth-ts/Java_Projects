@@ -20,8 +20,7 @@ public class User implements Serializable {
     private double userHeight, userWeight;
 
     public User(String userName) {
-        this.userName = userName;
-        userId = 0;
+        this.userName = userName.toUpperCase();
     }
 
     public User(String userName, int userAge, double userHeight, double userWeight) {
@@ -44,7 +43,7 @@ public class User implements Serializable {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.userName = userName.toUpperCase();
     }
 
     public void setUserAge(int userAge) {

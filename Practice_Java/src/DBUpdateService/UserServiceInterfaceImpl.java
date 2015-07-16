@@ -5,6 +5,7 @@
  */
 package DBUpdateService;
 
+import domain.StepRecord;
 import domain.User;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -14,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +24,8 @@ import java.util.logging.Logger;
  *
  * @author Arvin
  */
-public class UserServiceInterfaceImpl extends UnicastRemoteObject implements UserServiceInterface, User_DBQuery_Setting {
+public class UserServiceInterfaceImpl extends UnicastRemoteObject
+        implements UserServiceInterface, User_TableQuery_Setting, StepData_TableQuery_Setting {
 
     private Connection jdbcConnection;
     private Statement jdbcStatement;
@@ -47,11 +50,11 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
     @Override
     public void addUser(User newUser) throws RemoteException {
         try {
-            preparedStat = jdbcConnection.prepareStatement(QUERY_INSERT);
-            preparedStat.setString(COLUMN_INDEX_USERNAME, newUser.getUserName());
-            preparedStat.setInt(COLUMN_INDEX_USERAGE, newUser.getUserAge());
-            preparedStat.setDouble(COLUMN_INDEX_USERHEIGHT, newUser.getUserHeight());
-            preparedStat.setDouble(COLUMN_INDEX_USERWEIGHT, newUser.getUserWeight());
+            preparedStat = jdbcConnection.prepareStatement(User_TableQuery_Setting.QUERY_INSERT);
+            preparedStat.setString(User_TableQuery_Setting.COLUMN_INDEX_USERNAME, newUser.getUserName());
+            preparedStat.setInt(User_TableQuery_Setting.COLUMN_INDEX_USERAGE, newUser.getUserAge());
+            preparedStat.setDouble(User_TableQuery_Setting.COLUMN_INDEX_USERHEIGHT, newUser.getUserHeight());
+            preparedStat.setDouble(User_TableQuery_Setting.COLUMN_INDEX_USERWEIGHT, newUser.getUserWeight());
             preparedStat.executeUpdate();
             jdbcConnection.commit();
             jdbcResultSet = jdbcStatement.executeQuery("select last_insert_id() as last_id");
@@ -67,7 +70,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
     @Override
     public boolean removeUser(User userToBeRemove) throws RemoteException {
         try {
-            preparedStat = jdbcConnection.prepareStatement(QUERY_DROP_RECORD);
+            preparedStat = jdbcConnection.prepareStatement(User_TableQuery_Setting.QUERY_DROP_RECORD);
             preparedStat.setLong(1, userToBeRemove.getUserId());
             preparedStat.execute();
             jdbcConnection.commit();
@@ -84,17 +87,18 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
     public ArrayList<User> getAllUser() throws RemoteException {
         ArrayList<User> list = new ArrayList<>();
         try {
-            preparedStat = jdbcConnection.prepareStatement(QUERY_SELECT);
+            preparedStat = jdbcConnection.prepareStatement(User_TableQuery_Setting.QUERY_SELECT);
             jdbcResultSet = preparedStat.executeQuery();
-            while (jdbcResultSet.next()) {
-                System.out.println(jdbcResultSet.getString(TABLE_COLUMN_NAME_USERNAME));
-                list.add(new User(jdbcResultSet.getLong(TABLE_COLUMN_NAME_USERID),
-                        jdbcResultSet.getString(TABLE_COLUMN_NAME_USERNAME),
-                        jdbcResultSet.getInt(TABLE_COLUMN_NAME_USERAGE),
-                        jdbcResultSet.getDouble(TABLE_COLUMN_NAME_USERHEIGHT),
-                        jdbcResultSet.getDouble(TABLE_COLUMN_NAME_USERWEIGHT)));
-            }
-
+            /*
+             while (jdbcResultSet.next()) {
+             System.out.println(jdbcResultSet.getString(User_TableQuery_Setting.TABLE_COLUMN_NAME_USERNAME));
+             list.add(new User(jdbcResultSet.getLong(User_TableQuery_Setting.TABLE_COLUMN_NAME_USERID),
+             jdbcResultSet.getString(User_TableQuery_Setting.TABLE_COLUMN_NAME_USERNAME),
+             jdbcResultSet.getInt(User_TableQuery_Setting.TABLE_COLUMN_NAME_USERAGE),
+             jdbcResultSet.getDouble(User_TableQuery_Setting.TABLE_COLUMN_NAME_USERHEIGHT),
+             jdbcResultSet.getDouble(User_TableQuery_Setting.TABLE_COLUMN_NAME_USERWEIGHT)));
+             }
+             */
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -105,4 +109,47 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject implements Use
     private void trace(String s) {
         System.out.println(s);
     }
+
+    @Override
+    public boolean insertNewRecord(StepRecord step) throws RemoteException {
+        try {
+            preparedStat = jdbcConnection.prepareStatement(StepData_TableQuery_Setting.QUERY_INSERT);
+            preparedStat.setInt(1, step.getStepCount());
+            preparedStat.setTimestamp(2, step.getRecordStartTime());
+            preparedStat.setLong(3, step.getUser().getUserId());
+            preparedStat.executeUpdate();
+            jdbcConnection.commit();
+            trace(preparedStat.toString());
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    @Override
+    public StepRecord searchStepTotalForUserWithinPeriod(StepRecord step) throws RemoteException {
+        int stepCount = 0;
+        try {
+            preparedStat = jdbcConnection.prepareStatement(StepData_TableQuery_Setting.QUERY_SELECT_WITH_TIME);
+            preparedStat.setLong(1, step.getUser().getUserId());
+            preparedStat.setTimestamp(2, step.getRecordStartTime());
+            preparedStat.setTimestamp(3, step.getRecordEndTime());
+            jdbcResultSet = preparedStat.executeQuery();
+            trace(preparedStat.toString());
+            if (jdbcResultSet != null) {
+                while (jdbcResultSet.next()) {
+                    stepCount += jdbcResultSet.getInt(StepData_TableQuery_Setting.TABLE_COLUMN_NAME_STEP);
+                }
+                step.setStepCount(stepCount);
+                System.out.println(step);
+            } else {
+                step.setStepCount(-1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return step;
+    }
+
 }
