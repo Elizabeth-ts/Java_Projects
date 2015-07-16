@@ -35,7 +35,7 @@ public class UserClient {
             initializeRMI();
             Timestamp start = new Timestamp(115, 6, 15, 20, 40, 0, 0);
             Timestamp end = new Timestamp(115, 6, 15, 20, 45, 0, 0);
-            User user = new User(5, "Test", 15, 22.5, 32.7);
+            User user = new User(2, "Test", 15, 22.5, 32.7);
 
             StepRecord step = new StepRecord(200, user, start);
 

@@ -9,6 +9,7 @@ import domain.StepRecord;
 import domain.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -48,7 +49,7 @@ public interface UserServiceInterface extends Remote {
      * @return success or not
      * @throws RemoteException
      */
-    public boolean insertNewRecord(StepRecord step) throws RemoteException;
+    public boolean insertNewRecord(StepRecord step) throws RemoteException, SQLException;
 
     /**
      *
@@ -56,5 +57,5 @@ public interface UserServiceInterface extends Remote {
      * @return StepRecord object contains new total amount of step count inside
      * @throws RemoteException
      */
-    public StepRecord searchStepTotalForUserWithinPeriod(StepRecord step) throws RemoteException;
+    public StepRecord searchStepTotalForUserWithinPeriod(StepRecord step) throws RemoteException, SQLException;
 }
