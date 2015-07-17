@@ -14,9 +14,17 @@ import java.sql.Timestamp;
  */
 public class StepRecord implements Serializable {
 
+    public static final long serialVersionUID = 1L;
     private int stepCount;
     private User user;
     private Timestamp recordStartTime, recordEndTime;
+
+    public StepRecord(int stepCount, User user, Timestamp recordStartTime, Timestamp recordEndTime) {
+        this.stepCount = stepCount;
+        this.user = user;
+        this.recordStartTime = recordStartTime;
+        this.recordEndTime = recordEndTime;
+    }
 
     public StepRecord(int stepCount, User user, Timestamp recordStartTime) {
         this.stepCount = stepCount;

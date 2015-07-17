@@ -34,7 +34,7 @@ import javax.swing.JTextArea;
 public class StudentServerClinet_Final_Version extends JPanel {
 
     private final JButton jbtAdd, jbtRemove, jbtSearch, jbtGetAllBad;
-    private final JTextArea jtaResult, jtaName, jtaScore;
+    private JTextArea jtaResult, jtaName, jtaScore;
     private StudentServerInterface student;
     private final String host = "localhost";
     private final String registry = "StudentServerInterfaceImpl";
@@ -136,6 +136,7 @@ public class StudentServerClinet_Final_Version extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame frame = new JFrame();
+                jtaResult = new JTextArea(5, 30);
                 frame.setLocationRelativeTo(null);
                 frame.setSize(300, 200);
                 frame.setVisible(true);

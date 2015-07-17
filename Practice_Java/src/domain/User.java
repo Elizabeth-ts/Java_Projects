@@ -14,6 +14,7 @@ import java.util.Objects;
  */
 public class User implements Serializable {
 
+    public static final long serialVersionUID = 1L;
     private long userId;
     private String userName;
     private int userAge;

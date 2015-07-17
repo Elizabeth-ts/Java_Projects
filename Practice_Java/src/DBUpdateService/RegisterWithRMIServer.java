@@ -24,7 +24,7 @@ public class RegisterWithRMIServer {
             Registry registry = LocateRegistry.createRegistry(1099);
             registry.rebind("UserServiceInterfaceImpl", obj);
             System.out.println("User server " + obj + " registered");
-
+            
         } catch (RemoteException ex) {
             Logger.getLogger(RegisterWithRMIServer.class.getName()).log(Level.SEVERE, null, ex);
         }

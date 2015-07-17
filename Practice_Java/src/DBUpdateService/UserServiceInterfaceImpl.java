@@ -83,7 +83,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
 
     }
 
-    @Override
+
     public ArrayList<User> getAllUser() throws RemoteException {
         ArrayList<User> list = new ArrayList<>();
         try {

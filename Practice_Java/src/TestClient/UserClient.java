@@ -6,6 +6,7 @@
 package TestClient;
 
 import DBUpdateService.UserServiceInterface;
+import DBUpdateService.UserServiceInterfaceImpl;
 import domain.StepRecord;
 import domain.User;
 import java.rmi.NotBoundException;
@@ -15,7 +16,6 @@ import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +49,7 @@ public class UserClient {
             step = new StepRecord(user, start, end);
             step = obj.searchStepTotalForUserWithinPeriod(step);
             System.out.println(step);
-            list = obj.getAllUser();
+            //list = obj.getAllUser();
             System.out.println(list);
 
         } catch (RemoteException | SQLException ex) {

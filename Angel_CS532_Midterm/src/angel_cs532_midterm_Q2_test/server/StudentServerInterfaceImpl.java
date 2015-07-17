@@ -26,7 +26,7 @@ public class StudentServerInterfaceImpl
     private ResultSet jdbcResultSet = null;
     private final String url = "jdbc:mysql://localhost:3306/";
     private final String user = "root";
-    private final String password = "johnson5414";
+    private final String password = "";
 
     public StudentServerInterfaceImpl() throws RemoteException, SQLException {
         // Get a connection to local database

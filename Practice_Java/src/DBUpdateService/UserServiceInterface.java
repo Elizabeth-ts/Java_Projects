@@ -36,14 +36,6 @@ public interface UserServiceInterface extends Remote {
     public boolean removeUser(User userToBeRemove) throws RemoteException;
 
     /**
-     * return the whole database data
-     *
-     * @return set of user data
-     * @throws java.rmi.RemoteException
-     */
-    public ArrayList<User> getAllUser() throws RemoteException;
-
-    /**
      *
      * @param step
      * @return success or not
