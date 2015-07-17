@@ -12,6 +12,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +52,7 @@ public class UserClient {
             list = obj.getAllUser();
             System.out.println(list);
 
-        } catch (RemoteException ex) {
+        } catch (RemoteException | SQLException ex) {
             Logger.getLogger(UserClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
