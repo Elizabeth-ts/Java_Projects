@@ -98,7 +98,7 @@ public class BridgeService {
                             case OPERATION_ADD_USER:
                                 obj.addUser(operation.getStepRecord().getUser());
                                 break;
-                            case OPERATION_INSERT_NEW_RECORD:
+                            case OPERATION_INSERT_NEW_STEPRECORD:
                                 try {
                                     if (!obj.insertNewRecord(operation.getStepRecord())) {
                                         operation = null;
@@ -112,7 +112,7 @@ public class BridgeService {
                                     operation = null;
                                 }
                                 break;
-                            case OPERATION_SEARCH:
+                            case OPERATION_SEARCH_STEPRECORD:
                                 try {
                                     StepRecord temp = obj.searchStepTotalForUserWithinPeriod(operation.getStepRecord());
                                     trace("---------------------------------");

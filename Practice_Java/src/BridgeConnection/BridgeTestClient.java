@@ -34,7 +34,7 @@ public class BridgeTestClient implements OperationPackInterface {
         Timestamp start = new Timestamp(115, 6, 15, 20, 40, 0, 0);
         Timestamp end = new Timestamp(115, 6, 15, 20, 45, 0, 0);
         StepRecord step = new StepRecord(0, user, start, end);
-        operation = new OperationPack(step, OPERATION_SEARCH);
+        operation = new OperationPack(step, OPERATION_SEARCH_STEPRECORD);
         try {
             Socket socket = new Socket(host, port);
             toServer = new ObjectOutputStream(socket.getOutputStream());

@@ -10,13 +10,21 @@ import domain.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  *
  * @author Arvin
  */
 public interface UserServiceInterface extends Remote {
+
+    public static final int OPERATION_ADD_USER = 0;
+    public static final int OPERATION_REMOVE_USER = 1;
+    public static final int OPERATION_INSERT_NEW_STEPRECORD = 2;
+    public static final int OPERATION_SEARCH_STEPRECORD = 3;
+    public static final int OPERATION_SEARCH_CONTACT_LIST = 4;
+    public static final int OPERATION_ADD_POST = 5;
+    public static final int OPERATION_RETRIEVE_POST = 6;
 
     /**
      * Add new User to the DB
@@ -50,4 +58,14 @@ public interface UserServiceInterface extends Remote {
      * @throws RemoteException
      */
     public StepRecord searchStepTotalForUserWithinPeriod(StepRecord step) throws RemoteException, SQLException;
+
+    /**
+     *
+     * @return stack of phone number indicate who is also using the application
+     */
+    public Stack<String> searchContactList(Stack<String> contactList);
+    
+    public boolean addPost();
+    
+    
 }

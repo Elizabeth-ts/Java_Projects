@@ -3,10 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/DBUpdateService/DBQuery_Setting.java</file>
-            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/DBUpdateService/UserServiceInterface.java</file>
-            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/DBUpdateService/RegisterWithRMIServer.java</file>
-            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/DBUpdateService/UserServiceInterfaceImpl.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/FinalDomain/ImageServer.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/FinalDomain/OperationPack.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/FinalDomain/ImageClient.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/BridgeConnection/BridgeService.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/FinalDomain/StepRecord.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/FinalDomain/OperationPackageInterface.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/FinalDomain/Post.java</file>
+            <file>file:/C:/Users/Arvin/Documents/NetBeansProjects/Practice_Java/src/FinalDomain/User.java</file>
         </group>
     </open-files>
 </project-private>
