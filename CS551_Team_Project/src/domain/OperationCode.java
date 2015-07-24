@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FinalDomain;
+package domain;
 
 /**
  *
  * @author Arvin
  */
-public interface OperationPackageInterface {
+public interface OperationCode {
 
     public static final int OPERATION_ADD_USER = 0;
     public static final int OPERATION_REMOVE_USER = 1;

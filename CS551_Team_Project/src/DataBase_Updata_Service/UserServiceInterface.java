@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DBUpdateService;
+package DataBase_Updata_Service;
 
-import domain.StepRecord;
-import domain.User;
+import domain.Post;
+import domain.UserPackage;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.Stack;
 
 /**
@@ -24,7 +23,7 @@ public interface UserServiceInterface extends Remote {
      * @param newUser
      * @throws java.rmi.RemoteException
      */
-    public void addUser(User newUser) throws RemoteException;
+    public boolean addUser(UserPackage newUser) throws RemoteException;
 
     /**
      * Remove User by giving an User object
@@ -33,7 +32,7 @@ public interface UserServiceInterface extends Remote {
      * @return remove success or not
      * @throws java.rmi.RemoteException
      */
-    public boolean removeUser(User userToBeRemove) throws RemoteException;
+    public boolean removeUser(UserPackage userToBeRemove) throws RemoteException;
 
     /**
      *
@@ -41,7 +40,7 @@ public interface UserServiceInterface extends Remote {
      * @return success or not
      * @throws RemoteException
      */
-    public boolean insertNewRecord(StepRecord step) throws RemoteException, SQLException;
+    public boolean insertNewRecord(UserPackage user) throws RemoteException;
 
     /**
      *
@@ -49,14 +48,27 @@ public interface UserServiceInterface extends Remote {
      * @return StepRecord object contains new total amount of step count inside
      * @throws RemoteException
      */
-    public StepRecord searchStepTotalForUserWithinPeriod(StepRecord step) throws RemoteException, SQLException;
+    public UserPackage searchStepTotalForUserWithinPeriod(UserPackage user) throws RemoteException;
 
     /**
      *
+     * @param contactList
      * @return stack of phone number indicate who is also using the application
      */
-    public Stack<String> searchContactList(Stack<String> contactList);
+    public Stack<String> searchContactList(Stack<String> contactList) throws RemoteException;
 
-    public boolean addPost();
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public boolean addPost(UserPackage user) throws RemoteException;
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public Stack<Post> getPost(UserPackage user) throws RemoteException;
 
 }
