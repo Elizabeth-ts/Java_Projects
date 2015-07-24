@@ -12,8 +12,8 @@ package SQL_PreparedStatements;
 public interface TableQuery_User extends DataBaseQuery {
 
     public static final String TABLE_NAME = "user";
-    public static final String TABLE_COLUMN_NAME_USERID = "userID";
-    public static final String TABLE_COLUMN_NAME_USERNAME = "name";
+    public static final String TABLE_COLUMN_NAME_USERID = "user_ID";
+    public static final String TABLE_COLUMN_NAME_USERNAME = "user_name";
     public static final String TABLE_COLUMN_NAME_PHONE_NUMBER = "phone_number";
 
     public static final String INSERT = "INSERT INTO " + DATABASE_NAME + "." + TABLE_NAME + "("

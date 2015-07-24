@@ -15,18 +15,21 @@ public class Post implements Serializable {
 
     public static final long serialVersionUID = 2L;
     private long postId;
-    private String message;
-    private boolean hasImage;
+    private String message = null;
+    private ImageInBytes imageInBytes = new ImageInBytes();
 
-    public Post(String message, boolean hasImage) {
+    public Post(String message) {
         this.message = message;
-        this.hasImage = hasImage;
     }
 
-    public Post(long postId, String message, boolean hasImage) {
+    public Post(ImageInBytes image) {
+        this.imageInBytes = image;
+    }
+
+    public Post(String message, ImageInBytes imageInBytes) {
         this.postId = postId;
         this.message = message;
-        this.hasImage = hasImage;
+        this.imageInBytes = imageInBytes;
     }
 
     public long getPostId() {
@@ -45,18 +48,18 @@ public class Post implements Serializable {
         this.message = message;
     }
 
-    public boolean isHasImage() {
-        return hasImage;
+    public ImageInBytes getImageInBytes() {
+        return imageInBytes;
     }
 
-    public void setHasImage(boolean hasImage) {
-        this.hasImage = hasImage;
+    public void setImageInBytes(ImageInBytes imageInBytes) {
+        this.imageInBytes = imageInBytes;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + (int) (this.postId ^ (this.postId >>> 32));
+        hash = 79 * hash + (int) (this.postId ^ (this.postId >>> 32));
         return hash;
     }
 
@@ -69,12 +72,10 @@ public class Post implements Serializable {
             return false;
         }
         final Post other = (Post) obj;
-        return this.postId == other.postId;
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" + "postId=" + postId + ", message=" + message + ", hasImage=" + hasImage + '}';
+        if (this.postId != other.postId) {
+            return false;
+        }
+        return true;
     }
 
 }

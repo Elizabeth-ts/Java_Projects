@@ -9,6 +9,11 @@ import SQL_PreparedStatements.*;
 import domain.Post;
 import domain.StepRecord;
 import domain.UserPackage;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -20,6 +25,7 @@ import java.sql.Statement;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -32,6 +38,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
     private Statement jdbcStatement;
     private ResultSet jdbcResultSet;
     private PreparedStatement preparedStat;
+    private String postImageFilePath = "C:\\imageTest";
 
     public UserServiceInterfaceImpl() throws RemoteException {
         try {
@@ -117,7 +124,6 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
             return null;
         }
         return user;
-
     }
 
     @Override
@@ -135,7 +141,6 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
                     }
                 }
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -145,12 +150,67 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
 
     @Override
     public boolean addPost(UserPackage user) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (user.getPost() == null) {
+            return false;
+        }
+        String imageURL = postImageFilePath + File.separator + user.getPhoneNumber() + File.separator
+                + user.getPost().getImageInBytes().getImageFileName();
+        if (user.getPost().getImageInBytes().getImageData() != null) {
+            try {
+                InputStream is = new ByteArrayInputStream(user.getPost().getImageInBytes().getImageData());
+                BufferedImage bImage = ImageIO.read(is);
+                File newImageFile = new File(imageURL);
+                newImageFile.getParentFile().mkdirs();
+                newImageFile.createNewFile();
+                ImageIO.write(bImage, user.getPost().getImageInBytes().getImageFileType(), newImageFile);
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        try {
+            preparedStat = jdbcConnection.prepareStatement(TableQuery_Post.INSERT);
+            preparedStat.setString(1, user.getPhoneNumber());
+            preparedStat.setString(2, user.getPost().getMessage());
+            preparedStat.setString(3, imageURL);
+            preparedStat.setString(4, user.getPost().getImageInBytes().getImageFileName());
+            preparedStat.setString(5, user.getPost().getImageInBytes().getImageFileType());
+            preparedStat.setLong(6, user.getPost().getImageInBytes().getImageFileSize());
+            preparedStat.executeUpdate();
+            jdbcConnection.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
     }
 
     @Override
     public Stack<Post> getPost(UserPackage user) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Stack<Post> postStack = new Stack<>();
+        try {
+            preparedStat = jdbcConnection.prepareStatement(TableQuery_Post.SELECT);
+            preparedStat.setString(1, user.getPhoneNumber());
+            jdbcResultSet = preparedStat.executeQuery();
+            if(jdbcResultSet != null){
+                while(jdbcResultSet.next()){
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                }
+            }
+            
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return postStack;
     }
 
 }
