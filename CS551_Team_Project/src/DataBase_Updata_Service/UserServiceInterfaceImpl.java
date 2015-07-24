@@ -6,11 +6,13 @@
 package DataBase_Updata_Service;
 
 import SQL_PreparedStatements.*;
+import domain.ImageInBytes;
 import domain.Post;
 import domain.StepRecord;
 import domain.UserPackage;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -155,16 +157,26 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
         }
         String imageURL = postImageFilePath + File.separator + user.getPhoneNumber() + File.separator
                 + user.getPost().getImageInBytes().getImageFileName();
+        InputStream is = null;
+        File newImageFile = null;
         if (user.getPost().getImageInBytes().getImageData() != null) {
             try {
-                InputStream is = new ByteArrayInputStream(user.getPost().getImageInBytes().getImageData());
+                is = new ByteArrayInputStream(user.getPost().getImageInBytes().getImageData());
                 BufferedImage bImage = ImageIO.read(is);
-                File newImageFile = new File(imageURL);
+                newImageFile = new File(imageURL);
                 newImageFile.getParentFile().mkdirs();
                 newImageFile.createNewFile();
                 ImageIO.write(bImage, user.getPost().getImageInBytes().getImageFileType(), newImageFile);
             } catch (IOException ex) {
                 Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    if (is != null) {
+                        is.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         try {
@@ -187,27 +199,40 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
     @Override
     public Stack<Post> getPost(UserPackage user) throws RemoteException {
         Stack<Post> postStack = new Stack<>();
+        int postCount = 10;
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_Post.SELECT);
             preparedStat.setString(1, user.getPhoneNumber());
+            preparedStat.setInt(2, postCount);
             jdbcResultSet = preparedStat.executeQuery();
-            if(jdbcResultSet != null){
-                while(jdbcResultSet.next()){
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+            if (jdbcResultSet != null) {
+                while (jdbcResultSet.next()) {
+                    BufferedImage img = null;
+                    ByteArrayOutputStream baos = null;
+                    byte[] imageData = null;
+                    String fileName = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_NAME);
+                    String fileURL = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_URL);
+                    String fileType = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_TYPE);
+                    String postMessage = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_MESSAGE);
+                    //String phoneNumber = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_PHONE_NUMBER);
+                    Long fileSize = jdbcResultSet.getLong(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_SIZE);
+
+                    img = ImageIO.read(new File(fileURL));
+                    baos = new ByteArrayOutputStream();
+
+                    ImageIO.write(img, fileType, baos);
+                    baos.flush();
+
+                    imageData = baos.toByteArray();
+                    baos.close();
+
+                    ImageInBytes postImage = new ImageInBytes(fileName, fileType, fileSize, imageData);
+                    Post newPost = new Post(postMessage, postImage);
+                    postStack.push(newPost);
                 }
             }
-            
-            
-            
-        } catch (SQLException ex) {
+
+        } catch (SQLException | IOException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return postStack;
