@@ -17,7 +17,7 @@ public class OperationPackage implements Serializable {
     public static final long serialVersionUID = 2L;
     private int operationCode;
     private UserPackage userPackage;
-    private Stack<String> phoneNumberList;
+    private Stack<String> contactList;
     private Stack<Post> postList;
     private boolean execute = false;
 
@@ -34,9 +34,16 @@ public class OperationPackage implements Serializable {
         this.userPackage = userPackage;
     }
 
-    public OperationPackage(int operationCode, Stack<String> phoneNumberList) {
+    public OperationPackage(int operationCode, Stack<String> contactList) {
         this.operationCode = operationCode;
-        this.phoneNumberList = phoneNumberList;
+        this.contactList = contactList;
+    }
+
+    public OperationPackage(int operationCode, UserPackage userPackage, Stack<String> contactList, Stack<Post> postList) {
+        this.operationCode = operationCode;
+        this.userPackage = userPackage;
+        this.contactList = contactList;
+        this.postList = postList;
     }
 
     public int getOperationCode() {
@@ -55,12 +62,12 @@ public class OperationPackage implements Serializable {
         this.userPackage = userPackage;
     }
 
-    public Stack<String> getPhoneNumberList() {
-        return phoneNumberList;
+    public Stack<String> getContactList() {
+        return contactList;
     }
 
-    public void setPhoneNumberList(Stack<String> phoneNumberList) {
-        this.phoneNumberList = phoneNumberList;
+    public void setContactList(Stack<String> contactList) {
+        this.contactList = contactList;
     }
 
     public Stack<Post> getPostList() {
@@ -81,7 +88,7 @@ public class OperationPackage implements Serializable {
 
     @Override
     public String toString() {
-        return "OperationPackage{" + "operationCode=" + operationCode + ", userPackage=" + userPackage + ", phoneNumberList=" + phoneNumberList + ", postList=" + postList + ", execute=" + execute + '}';
+        return "OperationPackage{" + "operationCode=" + operationCode + ", userPackage=" + userPackage + ", contactList=" + contactList + ", postList=" + postList + ", execute=" + execute + '}';
     }
 
 }

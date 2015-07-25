@@ -5,6 +5,7 @@
  */
 package DataBase_Updata_Service;
 
+import domain.OperationPackage;
 import domain.Post;
 import domain.UserPackage;
 import java.rmi.Remote;
@@ -20,10 +21,9 @@ public interface UserServiceInterface extends Remote {
     /**
      * Add new User to the DB
      *
-     * @param newUser
      * @throws java.rmi.RemoteException
      */
-    public boolean addUser(UserPackage newUser) throws RemoteException;
+    public OperationPackage addUser(OperationPackage operation) throws RemoteException;
 
     /**
      * Remove User by giving an User object
@@ -32,7 +32,7 @@ public interface UserServiceInterface extends Remote {
      * @return remove success or not
      * @throws java.rmi.RemoteException
      */
-    public boolean removeUser(UserPackage userToBeRemove) throws RemoteException;
+    public OperationPackage removeUser(OperationPackage operation) throws RemoteException;
 
     /**
      *
@@ -40,7 +40,7 @@ public interface UserServiceInterface extends Remote {
      * @return success or not
      * @throws RemoteException
      */
-    public boolean insertNewRecord(UserPackage user) throws RemoteException;
+    public OperationPackage insertNewRecord(OperationPackage operation) throws RemoteException;
 
     /**
      *
@@ -48,27 +48,27 @@ public interface UserServiceInterface extends Remote {
      * @return StepRecord object contains new total amount of step count inside
      * @throws RemoteException
      */
-    public UserPackage searchStepTotalForUserWithinPeriod(UserPackage user) throws RemoteException;
+    public OperationPackage searchStepTotalForUserWithinPeriod(OperationPackage operation) throws RemoteException;
 
     /**
      *
      * @param contactList
      * @return stack of phone number indicate who is also using the application
      */
-    public Stack<String> searchContactList(Stack<String> contactList) throws RemoteException;
+    public OperationPackage searchContactList(OperationPackage operation) throws RemoteException;
 
     /**
      *
      * @param user
      * @return
      */
-    public boolean addPost(UserPackage user) throws RemoteException;
+    public OperationPackage addPost(OperationPackage operation) throws RemoteException;
 
     /**
      *
      * @param user
      * @return
      */
-    public Stack<Post> getPost(UserPackage user) throws RemoteException;
+    public OperationPackage getPost(OperationPackage operation) throws RemoteException;
 
 }

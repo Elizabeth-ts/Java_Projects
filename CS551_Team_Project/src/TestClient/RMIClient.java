@@ -69,13 +69,14 @@ public class RMIClient {
         stack.push("6");
         stack.push("5123123");
         stack.push("123456789");
-
+/*
         try {
             //obj.addUser(user);
             //Stack<String> newStack = obj.searchContactList(stack);
             //obj.addPost(user);
             //System.out.println();
-            Stack<Post> postStack = obj.getPost(user);
+           // Stack<Post> postStack = obj.getPost(user);
+            
             while (!postStack.isEmpty()) {
                 Post newPost = postStack.pop();
                 InputStream is = null;
@@ -90,7 +91,7 @@ public class RMIClient {
 
         } catch (IOException ex) {
             Logger.getLogger(RMIClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 
     protected void initializeRMI() {

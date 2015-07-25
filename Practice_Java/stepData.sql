@@ -44,3 +44,6 @@ select step from userdb.stepdata
 where userid = 5 and record_end_date between '2015-07-15 19:30:00' and '2015-07-15 20:41:24';
 
 INSERT INTO userDB.stepdata(step,record_start_date,userID) VALUES (200,'2015-07-15 20:40:00',5);
+
+
+select * from studentdb.scores;

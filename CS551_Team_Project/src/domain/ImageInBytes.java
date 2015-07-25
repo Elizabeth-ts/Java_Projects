@@ -45,4 +45,9 @@ public class ImageInBytes implements Serializable {
         return imageData;
     }
 
+    @Override
+    public String toString() {
+        return "ImageInBytes{" + "imageFileName=" + imageFileName + ", imageFileType=" + imageFileType + ", imageFileSize=" + imageFileSize + '}';
+    }
+
 }

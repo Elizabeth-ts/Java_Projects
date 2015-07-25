@@ -34,27 +34,16 @@ CREATE TABLE IF NOT EXISTS cs551_team_project.post (
 insert into cs551_team_project.post(phone_number, message, image_file_url, image_file_name, image_file_type, image_file_size)
 values ("6", "test message", null, null, null, null);
 
+select * from cs551_team_project.user;
+select * from cs551_team_project.step_record;
 select * from cs551_team_project.post;
 
+delete from cs551_team_project.user where phone_number ="2";
 
 
-
-CREATE TABLE IF NOT EXISTS cs551_team_Project.imageTest(
-	image_id BIGINT NOT NULL AUTO_INCREMENT,
-    image_type VARCHAR(25) NOT NULL,
-    image BLOB NOT NULL,
-    image_size VARCHAR(25),
-    image_name VARCHAR(1000),
-	PRIMARY KEY(image_id)
-);
-
-
-
-
-
-INSERT INTO CS551_TEAM_PROJECT.USER (NAME, PHONE_NUMBER)VALUE("arvin", "6");
+INSERT INTO CS551_TEAM_PROJECT.USER (user_NAME, PHONE_NUMBER)VALUE("arvin", "5");
 INSERT INTO cs551_team_project.step_record (step, record_start_date, record_end_date, phone_number)
-	VALUES(200, '2015-07-15 19:18:00', '2015-07-15 19:18:00', "12345676");
+	VALUES(200, '2015-07-15 19:18:00', '2015-07-15 19:18:00', "2");
 SELECT * FROM CS551_TEAM_PROJECT.USER;
 SELECT * FROM cs551_team_project.step_record;
 SELECT * FROM userdb.user WHERE userid = 2;

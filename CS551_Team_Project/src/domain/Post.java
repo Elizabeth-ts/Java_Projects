@@ -27,6 +27,11 @@ public class Post implements Serializable {
     }
 
     public Post(String message, ImageInBytes imageInBytes) {
+        this.message = message;
+        this.imageInBytes = imageInBytes;
+    }
+
+    public Post(long postId, String message, ImageInBytes imageInBytes) {
         this.postId = postId;
         this.message = message;
         this.imageInBytes = imageInBytes;
@@ -76,6 +81,11 @@ public class Post implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" + "postId=" + postId + ", message=" + message + ", imageInBytes=" + imageInBytes + '}';
     }
 
 }

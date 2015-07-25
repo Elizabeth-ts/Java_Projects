@@ -7,6 +7,7 @@ package DataBase_Updata_Service;
 
 import SQL_PreparedStatements.*;
 import domain.ImageInBytes;
+import domain.OperationPackage;
 import domain.Post;
 import domain.StepRecord;
 import domain.UserPackage;
@@ -56,117 +57,129 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
     }
 
     @Override
-    public boolean addUser(UserPackage newUser) throws RemoteException {
+    public OperationPackage addUser(OperationPackage operation) throws RemoteException {
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_User.INSERT);
-            preparedStat.setString(1, newUser.getUserName());
-            preparedStat.setString(2, newUser.getPhoneNumber());
+            preparedStat.setString(1, operation.getUserPackage().getUserName());
+            preparedStat.setString(2, operation.getUserPackage().getPhoneNumber());
             preparedStat.executeUpdate();
             jdbcConnection.commit();
             jdbcResultSet = jdbcStatement.executeQuery("select last_insert_id() as last_id");
             if (jdbcResultSet.next()) {
-                newUser.setUserId(jdbcResultSet.getInt("last_id"));
+                operation.getUserPackage().setUserId(jdbcResultSet.getInt("last_id"));
             }
+            operation.setExecute(true);
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+        } finally {
+            return operation;
         }
-        return true;
     }
 
     @Override
-    public boolean removeUser(UserPackage userToBeRemove) throws RemoteException {
+    public OperationPackage removeUser(OperationPackage operation) throws RemoteException {
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_User.DELETE);
-            preparedStat.setString(1, userToBeRemove.getPhoneNumber());
+            preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
             preparedStat.execute();
             jdbcConnection.commit();
+            operation.setExecute(true);
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+        } finally {
+            return operation;
         }
-        return true;
+
     }
 
     @Override
-    public boolean insertNewRecord(UserPackage user) throws RemoteException {
-        StepRecord data = user.getStepRecord();
+    public OperationPackage insertNewRecord(OperationPackage operation) throws RemoteException {
+        StepRecord data = operation.getUserPackage().getStepRecord();
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_StepRecord.INSERT);
             preparedStat.setInt(1, data.getStepCount());
             preparedStat.setTimestamp(2, data.getRecordStartDate());
             preparedStat.setTimestamp(3, data.getRecordEndDate());
-            preparedStat.setString(4, user.getPhoneNumber());
+            preparedStat.setString(4, operation.getUserPackage().getPhoneNumber());
             preparedStat.executeUpdate();
             jdbcConnection.commit();
+            jdbcResultSet = jdbcStatement.executeQuery("select last_insert_id() as last_id");
+            if (jdbcResultSet.next()) {
+                operation.getUserPackage().getStepRecord().setStepRecordId(jdbcResultSet.getInt("last_id"));
+            }
+            operation.setExecute(true);
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
         }
-        return true;
+        return operation;
     }
 
     @Override
-    public UserPackage searchStepTotalForUserWithinPeriod(UserPackage user) throws RemoteException {
+    public OperationPackage searchStepTotalForUserWithinPeriod(OperationPackage operation) throws RemoteException {
         int totalStepCount = 0;
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_StepRecord.SELECT);
-            preparedStat.setString(1, user.getPhoneNumber());
-            preparedStat.setTimestamp(2, user.getStepRecord().getRecordStartDate());
-            preparedStat.setTimestamp(3, user.getStepRecord().getRecordEndDate());
+            preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
+            preparedStat.setTimestamp(2, operation.getUserPackage().getStepRecord().getRecordStartDate());
+            preparedStat.setTimestamp(3, operation.getUserPackage().getStepRecord().getRecordEndDate());
             jdbcResultSet = preparedStat.executeQuery();
             if (jdbcResultSet != null) {
                 while (jdbcResultSet.next()) {
                     totalStepCount += jdbcResultSet.getInt(TABLE_COLUMN_NAME_STEP);
                 }
             }
-            user.getStepRecord().setStepCount(totalStepCount);
+            trace("step after execution:" + totalStepCount);
+            operation.getUserPackage().getStepRecord().setStepCount(totalStepCount);
+            operation.setExecute(true);
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+        } finally {
+            return operation;
         }
-        return user;
     }
 
     @Override
-    public Stack<String> searchContactList(Stack<String> contactList) throws RemoteException {
+    public OperationPackage searchContactList(OperationPackage operation) throws RemoteException {
         final Stack<String> confirmList = new Stack<>();
-        System.out.println(contactList);
+        System.out.println(operation.getContactList());
         try {
             preparedStat = jdbcConnection.prepareStatement("select phone_number from cs551_team_project.user");
             jdbcResultSet = preparedStat.executeQuery();
             if (jdbcResultSet != null) {
                 while (jdbcResultSet.next()) {
                     String phoneNumber = jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_PHONE_NUMBER);
-                    if (contactList.contains(phoneNumber)) {
+                    if (operation.getContactList().contains(phoneNumber)) {
                         confirmList.push(phoneNumber);
                     }
                 }
             }
+            operation.setContactList(confirmList);
+            operation.setExecute(true);
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            System.out.println(confirmList);
+            return operation;
         }
-        System.out.println(confirmList);
-        return confirmList;
     }
 
     @Override
-    public boolean addPost(UserPackage user) throws RemoteException {
-        if (user.getPost() == null) {
-            return false;
+    public OperationPackage addPost(OperationPackage operation) throws RemoteException {
+        if (operation.getUserPackage().getPost() == null) {
+            return operation;
         }
-        String imageURL = postImageFilePath + File.separator + user.getPhoneNumber() + File.separator
-                + user.getPost().getImageInBytes().getImageFileName();
+        String imageURL = postImageFilePath + File.separator + operation.getUserPackage().getPhoneNumber() + File.separator
+                + operation.getUserPackage().getPost().getImageInBytes().getImageFileName();
         InputStream is = null;
         File newImageFile = null;
-        if (user.getPost().getImageInBytes().getImageData() != null) {
+        if (operation.getUserPackage().getPost().getImageInBytes().getImageData() != null) {
             try {
-                is = new ByteArrayInputStream(user.getPost().getImageInBytes().getImageData());
+                is = new ByteArrayInputStream(operation.getUserPackage().getPost().getImageInBytes().getImageData());
                 BufferedImage bImage = ImageIO.read(is);
                 newImageFile = new File(imageURL);
                 newImageFile.getParentFile().mkdirs();
                 newImageFile.createNewFile();
-                ImageIO.write(bImage, user.getPost().getImageInBytes().getImageFileType(), newImageFile);
+                ImageIO.write(bImage, operation.getUserPackage().getPost().getImageInBytes().getImageFileType(), newImageFile);
             } catch (IOException ex) {
                 Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
@@ -181,28 +194,33 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
         }
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_Post.INSERT);
-            preparedStat.setString(1, user.getPhoneNumber());
-            preparedStat.setString(2, user.getPost().getMessage());
+            preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
+            preparedStat.setString(2, operation.getUserPackage().getPost().getMessage());
             preparedStat.setString(3, imageURL);
-            preparedStat.setString(4, user.getPost().getImageInBytes().getImageFileName());
-            preparedStat.setString(5, user.getPost().getImageInBytes().getImageFileType());
-            preparedStat.setLong(6, user.getPost().getImageInBytes().getImageFileSize());
+            preparedStat.setString(4, operation.getUserPackage().getPost().getImageInBytes().getImageFileName());
+            preparedStat.setString(5, operation.getUserPackage().getPost().getImageInBytes().getImageFileType());
+            preparedStat.setLong(6, operation.getUserPackage().getPost().getImageInBytes().getImageFileSize());
             preparedStat.executeUpdate();
             jdbcConnection.commit();
+            jdbcResultSet = jdbcStatement.executeQuery("select last_insert_id() as last_id");
+            if (jdbcResultSet.next()) {
+                operation.getUserPackage().getPost().setPostId(jdbcResultSet.getInt("last_id"));
+            }
+            operation.setExecute(true);
         } catch (SQLException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+        } finally {
+            return operation;
         }
-        return true;
     }
 
     @Override
-    public Stack<Post> getPost(UserPackage user) throws RemoteException {
+    public OperationPackage getPost(OperationPackage operation) throws RemoteException {
         Stack<Post> postStack = new Stack<>();
         int postCount = 10;
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_Post.SELECT);
-            preparedStat.setString(1, user.getPhoneNumber());
+            preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
             preparedStat.setInt(2, postCount);
             jdbcResultSet = preparedStat.executeQuery();
             if (jdbcResultSet != null) {
@@ -210,6 +228,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
                     BufferedImage img = null;
                     ByteArrayOutputStream baos = null;
                     byte[] imageData = null;
+                    long postId = jdbcResultSet.getLong(TableQuery_Post.TABLE_COLUMN_NAME_POSTID);
                     String fileName = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_NAME);
                     String fileURL = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_URL);
                     String fileType = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_TYPE);
@@ -227,15 +246,20 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
                     baos.close();
 
                     ImageInBytes postImage = new ImageInBytes(fileName, fileType, fileSize, imageData);
-                    Post newPost = new Post(postMessage, postImage);
+                    Post newPost = new Post(postId, postMessage, postImage);
                     postStack.push(newPost);
                 }
             }
-
+            operation.setPostList(postStack);
+            operation.setExecute(true);
         } catch (SQLException | IOException ex) {
             Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return operation;
         }
-        return postStack;
     }
 
+    private void trace(String s) {
+        System.out.println(s);
+    }
 }
