@@ -24,7 +24,8 @@ public interface UserServiceInterface extends Remote {
      * @throws java.rmi.RemoteException
      */
     public OperationPackage addUser(OperationPackage operation) throws RemoteException;
-
+    public OperationPackage searchUser(OperationPackage operation) throws RemoteException ;
+    public OperationPackage searchAddUser(OperationPackage operation) throws RemoteException ;
     /**
      * Remove User by giving an User object
      *

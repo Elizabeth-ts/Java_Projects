@@ -86,7 +86,7 @@ public class BridgeService {
                 toClient = new ObjectOutputStream(socket.getOutputStream());
                 while (true) {
                     operation = (OperationPackage) fromClient.readObject();
-                    trace("Object get from Client!");
+                    trace("Object get from Client!"+operation.getOperationCode());
                     if (operation == null) {
                         return;
                     }
@@ -120,12 +120,22 @@ public class BridgeService {
                         case OPERATION_ADD_POST:
                             trace("Add Post Start!");
                             operation = remoteObject.addPost(operation);
-                            trace("Add Post Done!  " + operation.isExecute() + operation.getUserPackage().getPost());
+                            trace("Add Post Done!  " + operation.isExecute() + "     " + operation.toString());
                             break;
                         case OPERATION_GET_POST:
                             trace("Get Post Start!");
                             operation = remoteObject.getPost(operation);
                             trace("Get Post Done!  " + operation.isExecute() + "     " + operation.getPostList());
+                            break;
+                        case OPERATION_SEARCH_USER:
+                            trace("Get Search User Start!");
+                            operation = remoteObject.searchUser(operation);
+                            trace("Get Search User Done!  " + operation.isExecute() + "     " + operation.getUserPackage().getUserName());
+                            break;
+                        case OPERATION_SEARCH_ADD_USER:
+                            trace("Get Search & add User Start!");
+                            operation = remoteObject.searchAddUser(operation);
+                            trace("Get Search & add User Done!  " + operation.isExecute() + "     " + operation.getUserPackage().getUserId());
                             break;
                         default:
                             break;

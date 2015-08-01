@@ -19,4 +19,6 @@ public interface OperationCode {
     public static final int OPERATION_ADD_POST = 5;
     public static final int OPERATION_GET_POST = 6;
 
+    public static final int OPERATION_SEARCH_USER = 7;
+    public static final int OPERATION_SEARCH_ADD_USER = 8;
 }

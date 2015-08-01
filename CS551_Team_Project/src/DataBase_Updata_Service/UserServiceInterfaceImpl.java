@@ -7,6 +7,7 @@ package DataBase_Updata_Service;
 
 import SQL_PreparedStatements.*;
 import domain.ImageInBytes;
+import domain.OperationCode;
 import domain.OperationPackage;
 import domain.Post;
 import domain.StepRecord;
@@ -41,7 +42,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
     private Statement jdbcStatement;
     private ResultSet jdbcResultSet;
     private PreparedStatement preparedStat;
-    private String postImageFilePath = "C:\\imageTest";
+    private String postImageFilePath ="C:\\imageTest";
 
     public UserServiceInterfaceImpl() throws RemoteException {
         try {
@@ -58,10 +59,41 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
 
     @Override
     public OperationPackage addUser(OperationPackage operation) throws RemoteException {
+        trace("-------------------db connect");
+        String imageURL = postImageFilePath + File.separator + operation.getUserPackage().getPhoneNumber() + File.separator
+                + operation.getUserPackage().getImageInBytes().getImageFileName();
+        trace("img URL "+imageURL);
+        InputStream is = null;
+        File newImageFile = null;
+        if (operation.getUserPackage().getImageInBytes().getImageData() != null) {
+            try {
+                is = new ByteArrayInputStream(operation.getUserPackage().getImageInBytes().getImageData());
+                BufferedImage bImage = ImageIO.read(is);
+                newImageFile = new File(imageURL);
+                newImageFile.getParentFile().mkdirs();
+                newImageFile.createNewFile();
+                ImageIO.write(bImage, operation.getUserPackage().getImageInBytes().getImageFileType(), newImageFile);
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    if (is != null) {
+                        is.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
         try {
             preparedStat = jdbcConnection.prepareStatement(TableQuery_User.INSERT);
             preparedStat.setString(1, operation.getUserPackage().getUserName());
             preparedStat.setString(2, operation.getUserPackage().getPhoneNumber());
+            preparedStat.setString(3, imageURL);
+            preparedStat.setString(4, operation.getUserPackage().getImageInBytes().getImageFileName());
+            preparedStat.setString(5, operation.getUserPackage().getImageInBytes().getImageFileType());
+            preparedStat.setLong(6, operation.getUserPackage().getImageInBytes().getImageFileSize());
+            
             preparedStat.executeUpdate();
             jdbcConnection.commit();
             jdbcResultSet = jdbcStatement.executeQuery("select last_insert_id() as last_id");
@@ -75,7 +107,103 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
             return operation;
         }
     }
+    @Override
+    public OperationPackage searchAddUser(OperationPackage operation) throws RemoteException {
+        int totalStepCount = 0;
+        try {
+            preparedStat = jdbcConnection.prepareStatement(TableQuery_User.GET_USER_FROM_PHONE_NUMBER);
+            preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
+            
+            jdbcResultSet = preparedStat.executeQuery();
+            if (jdbcResultSet != null) {
+                trace("searchAddUser: search result not null");
+                while (jdbcResultSet.next()) {
+                    BufferedImage img = null;
+                    ByteArrayOutputStream baos = null;
+                    byte[] imageData = null;
+                    String fileName = jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_NAME);
+                    String fileURL = jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_URL);
+                    String fileType = jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_TYPE);
+                    Long fileSize = jdbcResultSet.getLong(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_SIZE);
+                     
+                    img = ImageIO.read(new File(fileURL));
+                    baos = new ByteArrayOutputStream();
 
+                    ImageIO.write(img, fileType, baos);
+                    baos.flush();
+
+                    imageData = baos.toByteArray();
+                    baos.close();
+
+                    ImageInBytes profileImage = new ImageInBytes(fileName, fileType, fileSize, imageData);
+                    
+                    UserPackage user= new UserPackage((long)jdbcResultSet.getInt(TableQuery_User.TABLE_COLUMN_NAME_USERID),
+                                                        jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_USERNAME),
+                                                        jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_PHONE_NUMBER),
+                                                        profileImage
+                                                         );
+                    operation=null;
+                    operation=new OperationPackage(OperationCode.OPERATION_SEARCH_USER, user, null, null);
+                }
+            }if(operation.getUserPackage().getUserId()==0){
+                trace("searchAddUser: search result is null");
+                operation=addUser(operation);
+            }
+            //trace("step after execution:" + totalStepCount);
+            //operation.getUserPackage().getStepRecord().setStepCount(totalStepCount);
+            operation.setExecute(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return operation;
+        }
+    }
+
+    @Override
+    public OperationPackage searchUser(OperationPackage operation) throws RemoteException {
+        int totalStepCount = 0;
+        try {
+            preparedStat = jdbcConnection.prepareStatement(TableQuery_User.GET_USER_FROM_PHONE_NUMBER);
+            preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
+            jdbcResultSet = preparedStat.executeQuery();
+            if (jdbcResultSet != null) {
+                while (jdbcResultSet.next()) {
+                    BufferedImage img = null;
+                    ByteArrayOutputStream baos = null;
+                    byte[] imageData = null;
+                    String fileName = jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_NAME);
+                    String fileURL = jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_URL);
+                    String fileType = jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_TYPE);
+                    Long fileSize = jdbcResultSet.getLong(TableQuery_User.TABLE_COLUMN_NAME_IMAGE_FILE_SIZE);
+                     
+                    img = ImageIO.read(new File(fileURL));
+                    baos = new ByteArrayOutputStream();
+
+                    ImageIO.write(img, fileType, baos);
+                    baos.flush();
+
+                    imageData = baos.toByteArray();
+                    baos.close();
+
+                    ImageInBytes profileImage = new ImageInBytes(fileName, fileType, fileSize, imageData);
+                    
+                    UserPackage user= new UserPackage((long)jdbcResultSet.getInt(TableQuery_User.TABLE_COLUMN_NAME_USERID),
+                                                        jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_USERNAME),
+                                                        jdbcResultSet.getString(TableQuery_User.TABLE_COLUMN_NAME_PHONE_NUMBER),
+                                                        profileImage);
+                    operation=null;
+                    operation=new OperationPackage(OperationCode.OPERATION_SEARCH_USER, user, null, null);
+                }
+            }
+            //trace("step after execution:" + totalStepCount);
+            //operation.getUserPackage().getStepRecord().setStepCount(totalStepCount);
+            operation.setExecute(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(UserServiceInterfaceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return operation;
+        }
+    }
     @Override
     public OperationPackage removeUser(OperationPackage operation) throws RemoteException {
         try {
@@ -165,11 +293,17 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
 
     @Override
     public OperationPackage addPost(OperationPackage operation) throws RemoteException {
+        trace("hello World");
         if (operation.getUserPackage().getPost() == null) {
+            trace("null post");
             return operation;
         }
+        trace("---");
+        
         String imageURL = postImageFilePath + File.separator + operation.getUserPackage().getPhoneNumber() + File.separator
                 + operation.getUserPackage().getPost().getImageInBytes().getImageFileName();
+        trace(imageURL+"");
+        
         InputStream is = null;
         File newImageFile = null;
         if (operation.getUserPackage().getPost().getImageInBytes().getImageData() != null) {
@@ -193,14 +327,17 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
             }
         }
         try {
+            trace("Add Post b4 prep stat");
             preparedStat = jdbcConnection.prepareStatement(TableQuery_Post.INSERT);
+          
             preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
             preparedStat.setString(2, operation.getUserPackage().getPost().getMessage());
             preparedStat.setString(3, imageURL);
             preparedStat.setString(4, operation.getUserPackage().getPost().getImageInBytes().getImageFileName());
             preparedStat.setString(5, operation.getUserPackage().getPost().getImageInBytes().getImageFileType());
             preparedStat.setLong(6, operation.getUserPackage().getPost().getImageInBytes().getImageFileSize());
-            preparedStat.executeUpdate();
+            trace(preparedStat.toString());
+            preparedStat.executeUpdate();        
             jdbcConnection.commit();
             jdbcResultSet = jdbcStatement.executeQuery("select last_insert_id() as last_id");
             if (jdbcResultSet.next()) {
@@ -217,8 +354,9 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
     @Override
     public OperationPackage getPost(OperationPackage operation) throws RemoteException {
         Stack<Post> postStack = new Stack<>();
-        int postCount = 10;
+        int postCount = 7;
         try {
+            trace(operation.getUserPackage().getPhoneNumber());
             preparedStat = jdbcConnection.prepareStatement(TableQuery_Post.SELECT);
             preparedStat.setString(1, operation.getUserPackage().getPhoneNumber());
             preparedStat.setInt(2, postCount);
@@ -233,6 +371,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
                     String fileURL = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_URL);
                     String fileType = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_TYPE);
                     String postMessage = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_MESSAGE);
+                    String postTime = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_PostTime);
                     //String phoneNumber = jdbcResultSet.getString(TableQuery_Post.TABLE_COLUMN_NAME_PHONE_NUMBER);
                     Long fileSize = jdbcResultSet.getLong(TableQuery_Post.TABLE_COLUMN_NAME_IMAGE_FILE_SIZE);
 
@@ -246,7 +385,7 @@ public class UserServiceInterfaceImpl extends UnicastRemoteObject
                     baos.close();
 
                     ImageInBytes postImage = new ImageInBytes(fileName, fileType, fileSize, imageData);
-                    Post newPost = new Post(postId, postMessage, postImage);
+                    Post newPost = new Post(postId, postMessage, postImage, postTime);
                     postStack.push(newPost);
                 }
             }

@@ -1,11 +1,19 @@
-Drop CS551_TEAM_PROJECT if exists;
+drop Database CS551_TEAM_PROJECT;
 
 CREATE DATABASE CS551_TEAM_PROJECT;
+use CS551_TEAM_PROJECT;
+drop table CS551_TEAM_PROJECT.user if exists;
 CREATE TABLE IF NOT EXISTS CS551_TEAM_PROJECT.user (
     user_id BIGINT NOT NULL AUTO_INCREMENT,
     user_name VARCHAR(50),
     phone_number VARCHAR(20) NOT NULL UNIQUE,
-    PRIMARY KEY (USER_ID)
+
+    image_file_url VARCHAR(1000),
+    image_file_name VARCHAR(50),
+    image_file_type VARCHAR(10),
+    image_file_size BIGINT,
+
+    PRIMARY KEY (user_id)
 );
 CREATE TABLE IF NOT EXISTS CS551_TEAM_PROJECT.step_RECORD(
     step INT NOT NULL,
@@ -19,15 +27,34 @@ CREATE TABLE IF NOT EXISTS CS551_TEAM_PROJECT.step_RECORD(
         REFERENCES  cs551_team_project.user(phone_number)
         ON DELETE CASCADE
 );
+
 CREATE TABLE IF NOT EXISTS cs551_team_project.post (
     post_id BIGINT NOT NULL AUTO_INCREMENT,
     phone_number VARCHAR(20) NOT NULL,
+    message VARCHAR(1000),
+
+    image_file_url VARCHAR(1000),
+    image_file_name VARCHAR(50),
+    image_file_type VARCHAR(10),
+    image_file_size BIGINT,
+
+PostTime datetime ,
+    PRIMARY KEY (post_id),
+    FOREIGN KEY (phone_number)
+        REFERENCES cs551_team_project.user (phone_number)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS cs551_team_project.challen
+ge (
+    challenge_id BIGINT NOT NULL AUTO_INCREMENT,
+    user1_phone_number VARCHAR(20) NOT NULL,
+    user2_phone_number VARCHAR(20) NOT NULL,
     message VARCHAR(1000),
     image_file_url VARCHAR(1000),
     image_file_name VARCHAR(50),
     image_file_type VARCHAR(10),
     image_file_size BIGINT,
-    PostTime datetime NOT NULL DEFAULT GETDATE(),
     PRIMARY KEY (post_id),
     FOREIGN KEY (phone_number)
         REFERENCES cs551_team_project.user (phone_number)

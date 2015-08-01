@@ -19,15 +19,18 @@ public interface TableQuery_Post extends DataBaseQuery {
     public static final String TABLE_COLUMN_NAME_IMAGE_FILE_NAME = "image_file_name";
     public static final String TABLE_COLUMN_NAME_IMAGE_FILE_TYPE = "image_file_type";
     public static final String TABLE_COLUMN_NAME_IMAGE_FILE_SIZE = "image_file_size";
+    public static final String TABLE_COLUMN_NAME_PostTime = "PostTime";
+
 
     public static final String INSERT = "INSERT INTO " + DATABASE_NAME + "." + TABLE_NAME + "("
             + TABLE_COLUMN_NAME_PHONE_NUMBER + "," + TABLE_COLUMN_NAME_MESSAGE + ","
             + TABLE_COLUMN_NAME_IMAGE_FILE_URL + "," + TABLE_COLUMN_NAME_IMAGE_FILE_NAME + ","
-            + TABLE_COLUMN_NAME_IMAGE_FILE_TYPE + "," + TABLE_COLUMN_NAME_IMAGE_FILE_SIZE
-            + ")VALUE(?,?,?,?,?,?)";
+            + TABLE_COLUMN_NAME_IMAGE_FILE_TYPE + "," + TABLE_COLUMN_NAME_IMAGE_FILE_SIZE+ "," 
+            + TABLE_COLUMN_NAME_PostTime
+            + ")VALUE(?,?,?,?,?,?, now() )";
 
-    public static final String SELECT = "SELECT * FROM " + DATABASE_NAME + "." + TABLE_NAME
+    public static final String SELECT = "SELECT * FROM (SELECT * FROM " + DATABASE_NAME + "." + TABLE_NAME
             + " WHERE " + TABLE_COLUMN_NAME_PHONE_NUMBER + "=? ORDER BY " + TABLE_COLUMN_NAME_POSTID
-             + " DESC LIMIT ?";
+             + " DESC LIMIT ? ) AS s order by s."+TABLE_COLUMN_NAME_POSTID;
 
 }

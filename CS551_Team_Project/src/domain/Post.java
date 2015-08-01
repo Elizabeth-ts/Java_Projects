@@ -7,16 +7,21 @@ package domain;
 
 import java.io.Serializable;
 
-/**
- *
- * @author Arvin
- */
 public class Post implements Serializable {
 
     public static final long serialVersionUID = 2L;
     private long postId;
     private String message = null;
     private ImageInBytes imageInBytes = new ImageInBytes();
+    private String time = null;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public Post(String message) {
         this.message = message;
@@ -30,11 +35,24 @@ public class Post implements Serializable {
         this.message = message;
         this.imageInBytes = imageInBytes;
     }
+    
+    public Post(String message, ImageInBytes imageInBytes , String time) {
+        this.message = message;
+        this.imageInBytes = imageInBytes;
+        this.time = time;
+    }
 
     public Post(long postId, String message, ImageInBytes imageInBytes) {
         this.postId = postId;
         this.message = message;
         this.imageInBytes = imageInBytes;
+    }
+    
+    public Post(long postId, String message, ImageInBytes imageInBytes, String time) {
+        this.postId = postId;
+        this.message = message;
+        this.imageInBytes = imageInBytes;
+        this.time = time;
     }
 
     public long getPostId() {

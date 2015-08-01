@@ -18,15 +18,17 @@ public class UserPackage implements Serializable {
     private long userId;
     private String userName, phoneNumber;
     private StepRecord stepRecord;
+    private ImageInBytes imageInBytes = new ImageInBytes();
     private Post post;
 
     public UserPackage(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public UserPackage(String userName, String phoneNumber) {
+    public UserPackage(String userName, String phoneNumber, ImageInBytes imageInBytes) {
         this.userName = userName;
         this.phoneNumber = phoneNumber;
+        this.imageInBytes = imageInBytes;
     }
 
     public UserPackage(String phoneNumber, StepRecord stepRecord) {
@@ -39,10 +41,11 @@ public class UserPackage implements Serializable {
         this.post = post;
     }
 
-    public UserPackage(long userId, String userName, String phoneNumber) {
+    public UserPackage(long userId, String userName, String phoneNumber, ImageInBytes imageInBytes) {
         this.userId = userId;
         this.userName = userName;
         this.phoneNumber = phoneNumber;
+        this.imageInBytes = imageInBytes;
     }
 
     public UserPackage(String userName, String phoneNumber, StepRecord stepRecord, Post post) {
@@ -114,10 +117,17 @@ public class UserPackage implements Serializable {
         }
         return this.phoneNumber.equals(other.phoneNumber);
     }
+    public ImageInBytes getImageInBytes() {
+        return imageInBytes;
+    }
+
+    public void setImageInBytes(ImageInBytes imageInBytes) {
+        this.imageInBytes = imageInBytes;
+    }
 
     @Override
     public String toString() {
-        return "User{" + "userId=" + userId + ", userName=" + userName + ", phoneNumber=" + phoneNumber + ", stepRecord=" + stepRecord + ", post=" + post + '}';
+        return "User{" + "userId=" + userId + ", userName=" + userName + ", phoneNumber=" + phoneNumber +  ", imageInBytes=" + imageInBytes + ", stepRecord=" + stepRecord + ", post=" + post + '}';
     }
 
 }

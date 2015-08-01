@@ -30,7 +30,7 @@ import javax.imageio.ImageIO;
  */
 public class BridgeTestClient implements OperationCode {
     
-    private final String host = "localhost";
+    private final String host = "192.168.56.1";
     private final int port = 8000;
     private ObjectOutputStream toServer;
     private ObjectInputStream fromServer;
@@ -42,9 +42,7 @@ public class BridgeTestClient implements OperationCode {
         StepRecord step = new StepRecord(200, start, end);
         BufferedImage img = null;
         byte[] bytes = null;
-        UserPackage user = new UserPackage("Arvin", "2", step, null);
-        operation = new OperationPackage(OPERATION_GET_POST, user, null, null);
-        Stack<String> contactList = new Stack<>();
+        /*Stack<String> contactList = new Stack<>();
         contactList.push("1");
         contactList.push("3");
         contactList.push("5");
@@ -52,7 +50,7 @@ public class BridgeTestClient implements OperationCode {
         contactList.push("9");
         contactList.push("11");
         operation.setContactList(contactList);
-        
+        */
         try {
             img = ImageIO.read(new File("StarCraft-II-Loading-Screens-HD-Wallpapers_012.jpg"));
             
@@ -67,6 +65,9 @@ public class BridgeTestClient implements OperationCode {
             ImageInBytes image = new ImageInBytes("StarCraft-II-Loading-Screens-HD-Wallpapers_012.jpg",
                     "jpg", Long.valueOf(bytes.length), bytes);
             Post post = new Post("Test Message", image);
+            UserPackage user = new UserPackage("christy", "408987" ,image);
+            operation = new OperationPackage(OPERATION_ADD_POST, user, null, null);
+            trace("Client: "+operation.toString());
             operation.getUserPackage().setPost(post);
             
             Socket socket = new Socket(host, 8000);
@@ -77,7 +78,7 @@ public class BridgeTestClient implements OperationCode {
             toServer.flush();
             operation = (OperationPackage) fromServer.readObject();
             trace(operation.toString());
-            
+          
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(BridgeTestClient.class.getName()).log(Level.SEVERE, null, ex);
         }
