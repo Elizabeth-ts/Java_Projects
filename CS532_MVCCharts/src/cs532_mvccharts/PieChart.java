@@ -31,8 +31,8 @@ class PieChart extends JFrame implements ActionListener {
             x = xCenter - radius;
             y = yCenter - radius;
             updateList();
-            for (int i = 0; i < model.getData().length; i++) {
-                int endAngle = (int) (360 * model.getData()[i] / dataTotal);
+            for (int i = 0; i < model.getGpa().length; i++) {
+                int endAngle = (int) (360 * model.getGpa()[i] / dataTotal);
                 g.setColor(colorList[i % 5]);
                 g.fillArc(x, y, 2 * radius, 2 * radius, startAngle, endAngle);
                 radians = Math.toRadians(startAngle + endAngle / 2);
@@ -66,7 +66,7 @@ class PieChart extends JFrame implements ActionListener {
     public void updateList() {
         panel.removeAll();
         labelList.clear();
-        for (String s : model.getDataName()) {
+        for (String s : model.getCourseName()) {
             JLabel jlb = new JLabel(s);
             labelList.add(jlb);
             panel.add(jlb);

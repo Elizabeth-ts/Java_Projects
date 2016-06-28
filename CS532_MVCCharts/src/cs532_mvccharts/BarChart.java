@@ -29,13 +29,13 @@ class BarChart extends JFrame implements ActionListener {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                for (int i = 0; i < model.getData().length; i++) {
+                for (int i = 0; i < model.getGpa().length; i++) {
                     int ax = 10 + i * 70;
                     int ay = getHeight();
                     g.setColor(colorList[i % 5]);
-                    g.fillRect(ax, ay, 60, 0 - (int) model.getData()[i] * 15);
+                    g.fillRect(ax, ay, 60, 0 - (int) model.getGpa()[i] * 15);
                     g.setColor(Color.black);
-                    g.drawString(model.getDataName()[i], ax, ay - (int) model.getData()[i] * 15);
+                    g.drawString(model.getCourseName()[i], ax, ay - (int) model.getGpa()[i] * 15);
                 }
 
             }

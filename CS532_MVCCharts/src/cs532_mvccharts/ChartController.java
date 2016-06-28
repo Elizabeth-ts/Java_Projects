@@ -18,18 +18,20 @@ class ChartController extends JFrame {
 
     private final ArrayList<JTextField> jtfDataList = new ArrayList<>();
     private final ArrayList<JTextField> jtfDataNameList = new ArrayList<>();
-    private final JLabel jlbData = new JLabel("Data");
-    private final JLabel jlbDataName = new JLabel("Data Name");
+    private final ArrayList<JTextField> jtfCreditsList = new ArrayList<>();
+    private final JLabel jlbGPA = new JLabel("GPA");
+    private final JLabel jlbCourseName = new JLabel("Course Name");
+    private final JLabel jlbCredits = new JLabel("Credits");
     private final JButton jbtSave = new JButton("Save");
     private final JButton jbtAdd = new JButton("Add new data");
     private final ChartModel model;
 
     public ChartController(ChartModel model) {
         this.model = model;
-        final GridLayout myLayout = new GridLayout(0, 2);
+        final GridLayout myLayout = new GridLayout(0, 3);
         final JPanel dataPanel = new JPanel(myLayout);
         final JPanel buttonPanel = new JPanel(new FlowLayout());
-        final JPanel labelPanel = new JPanel(new GridLayout(1, 2));
+        final JPanel labelPanel = new JPanel(new GridLayout(1, 3));
         setTitle("Chart Controller");
         setLayout(new BorderLayout());
         //setLayout(new GridLayout(3, 2));
@@ -39,39 +41,51 @@ class ChartController extends JFrame {
         buttonPanel.add(jbtAdd);
         buttonPanel.add(jbtSave);
 
-        jlbData.setHorizontalAlignment(JLabel.CENTER);
-        jlbDataName.setHorizontalAlignment(JLabel.CENTER);
-        labelPanel.add(jlbDataName);
-        labelPanel.add(jlbData);
+        jlbGPA.setHorizontalAlignment(JLabel.CENTER);
+        jlbCourseName.setHorizontalAlignment(JLabel.CENTER);
+        jlbCredits.setHorizontalAlignment(JLabel.CENTER);
+        labelPanel.add(jlbCourseName);
+        labelPanel.add(jlbGPA);
+        labelPanel.add(jlbCredits);
 
         jbtAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JTextField jtfDataName = new JTextField("Empty");
-                JTextField jtfData = new JTextField("2");
+                JTextField jtfData = new JTextField("0");
+                JTextField jtfCredits = new JTextField("0");
                 myLayout.setRows(myLayout.getRows() + 1);
                 dataPanel.add(jtfDataName);
                 dataPanel.add(jtfData);
+                dataPanel.add(jtfCredits);
                 dataPanel.revalidate();
                 dataPanel.repaint();
                 jtfDataList.add(jtfData);
                 jtfDataNameList.add(jtfDataName);
+                jtfCreditsList.add(jtfCredits);
             }
         });
         jbtSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int count = jtfDataList.size();
-                double[] data = new double[count];
-                String[] dataName = new String[count];
+                double[] gpa = new double[count];
+                String[] courseName = new String[count];
+                double result;
+                int[] credits = new int[count];
                 for (int i = 0; i < count; i++) {
-                    data[i] = Double.parseDouble(jtfDataList.get(i).getText());
-                    dataName[i] = jtfDataNameList.get(i).getText();
+                    gpa[i] = Double.parseDouble(jtfDataList.get(i).getText());
+                    courseName[i] = jtfDataNameList.get(i).getText();
+                    credits[i] = Integer.parseInt(jtfCreditsList.get(i).getText());
                 }
-                model.setChartData(dataName, data);
+                model.setChartData(courseName, gpa, credits);
+                result = model.calculateAverageGpa();
+                JOptionPane.showMessageDialog(null,
+                        "" + result,
+                        "result",
+                        JOptionPane.PLAIN_MESSAGE);
             }
         });
-
         setSize(500, 150);
         setVisible(true);
     }
