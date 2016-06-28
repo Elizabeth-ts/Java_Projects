@@ -33,10 +33,13 @@ class BarChart extends JFrame implements ActionListener {
                 for (int i = 0; i < model.getGpa().length; i++) {
                     int ax = 10 + i * 70;
                     int ay = getHeight();
+                    int endY = (int) model.getGpa()[i] * 15;
                     g.setColor(colorList[i % 5]);
-                    g.fillRect(ax, ay, 60, 0 - (int) model.getGpa()[i] * 15);
+                    g.fillRect(ax, ay - endY, 60, endY);
+                    //g.fillRect(ax, ay, 60, 0 - (int) model.getGpa()[i] * 15);
                     g.setColor(Color.black);
-                    g.drawString(model.getCourseName()[i], ax, ay - (int) model.getGpa()[i] * 15);
+                    g.drawString(model.getCourseName()[i], ax, ay - endY - 5);
+                    g.drawRect(ax, ay - endY, 60, endY);
                 }
             }
         };

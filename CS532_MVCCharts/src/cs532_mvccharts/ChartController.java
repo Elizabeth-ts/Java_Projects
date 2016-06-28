@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,8 +26,8 @@ import javax.swing.JTextField;
  */
 class ChartController extends JFrame {
 
-    private final ArrayList<JTextField> jtfDataList = new ArrayList<>();
-    private final ArrayList<JTextField> jtfDataNameList = new ArrayList<>();
+    private final ArrayList<JComboBox> jcbGpaList = new ArrayList<>();
+    private final ArrayList<JTextField> jtfCourseNameList = new ArrayList<>();
     private final ArrayList<JTextField> jtfCreditsList = new ArrayList<>();
     private final JLabel jlbGPA = new JLabel("GPA");
     private final JLabel jlbCourseName = new JLabel("Course Name");
@@ -60,35 +61,42 @@ class ChartController extends JFrame {
         jbtAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextField jtfDataName = new JTextField("Empty");
-                JTextField jtfData = new JTextField("0");
-                JTextField jtfCredits = new JTextField("0");
+                JTextField jtfCourseName = new JTextField("Empty");
+                /*
+                JTextField jtfGpa = new JTextField("0");
+                 */
+                JComboBox jcbGpa = new JComboBox(model.getGpaKeyList());
+                JTextField jtfCredits = new JTextField("1");
                 myLayout.setRows(myLayout.getRows() + 1);
-                dataPanel.add(jtfDataName);
-                dataPanel.add(jtfData);
+                dataPanel.add(jtfCourseName);
+                dataPanel.add(jcbGpa);
                 dataPanel.add(jtfCredits);
                 dataPanel.revalidate();
                 dataPanel.repaint();
-                jtfDataList.add(jtfData);
-                jtfDataNameList.add(jtfDataName);
+                jcbGpaList.add(jcbGpa);
+                jtfCourseNameList.add(jtfCourseName);
                 jtfCreditsList.add(jtfCredits);
             }
         });
         jbtSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int count = jtfDataList.size();
+                int count = jcbGpaList.size();
                 double[] gpa = new double[count];
                 String[] courseName = new String[count];
                 double result;
                 int[] credits = new int[count];
                 for (int i = 0; i < count; i++) {
-                    gpa[i] = Double.parseDouble(jtfDataList.get(i).getText());
-                    courseName[i] = jtfDataNameList.get(i).getText();
+                    gpa[i] = model.getGpaMap().get(jcbGpaList.get(i).getSelectedItem().toString());
+                    //gpa[i] = Double.parseDouble(jcbGpaList.get(i).getSelectedItem().toString());
+                    courseName[i] = jtfCourseNameList.get(i).getText();
                     credits[i] = Integer.parseInt(jtfCreditsList.get(i).getText());
                 }
                 model.setChartData(courseName, gpa, credits);
                 result = model.calculateAverageGpa();
+                for (double d : gpa) {
+                    System.out.print(d);
+                }
                 JOptionPane.showMessageDialog(null,
                         "Your average GPA is: " + new DecimalFormat("0.00").format(result),
                         "result",

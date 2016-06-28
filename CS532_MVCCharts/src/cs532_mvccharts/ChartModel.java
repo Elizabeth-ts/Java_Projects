@@ -29,6 +29,14 @@ class ChartModel {
         for (int i = 0; i < gpaKeyList.length; i++) {
             gpaMap.put(gpaKeyList[i], gpaValueList[i]);
         }
+        /*
+        for (Object s :gpaMap.keySet().toArray()) {
+            System.out.println((String)s);
+        }
+        for (Object s :gpaMap.values().toArray()) {
+            System.out.println((Double)s);
+        }
+         */
     }
 
     public void addActionListener(ActionListener l) {
@@ -55,6 +63,18 @@ class ChartModel {
         gpa = newData;
         credits = newCredit;
         processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "test"));
+    }
+
+    public String[] getGpaKeyList() {
+        return gpaKeyList;
+    }
+
+    public double[] getGpaValueList() {
+        return gpaValueList;
+    }
+
+    public Map<String, Double> getGpaMap() {
+        return gpaMap;
     }
 
     public double[] getGpa() {
