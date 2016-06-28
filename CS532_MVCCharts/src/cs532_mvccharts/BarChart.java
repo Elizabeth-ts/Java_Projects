@@ -5,11 +5,12 @@
  */
 package cs532_mvccharts;
 
-import javax.swing.*;
-import java.util.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -37,9 +38,7 @@ class BarChart extends JFrame implements ActionListener {
                     g.setColor(Color.black);
                     g.drawString(model.getCourseName()[i], ax, ay - (int) model.getGpa()[i] * 15);
                 }
-
             }
-
         };
         add(panel);
         setTitle("Bar Chart");

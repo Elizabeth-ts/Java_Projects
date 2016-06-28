@@ -5,10 +5,13 @@
  */
 package cs532_mvccharts;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -26,15 +29,14 @@ public class ChartMain extends JFrame {
         JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        
+
         getContentPane().add(panel1);
         getContentPane().add(panel2);
         getContentPane().add(panel3);
         panel1.add(jbtController);
         panel2.add(jbtPieChartView);
         panel3.add(jbtBarChartView);
-        
-        
+
         jbtController.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

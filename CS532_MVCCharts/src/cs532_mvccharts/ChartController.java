@@ -5,10 +5,19 @@
  */
 package cs532_mvccharts;
 
-import java.util.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -81,7 +90,7 @@ class ChartController extends JFrame {
                 model.setChartData(courseName, gpa, credits);
                 result = model.calculateAverageGpa();
                 JOptionPane.showMessageDialog(null,
-                        "" + result,
+                        "Your average GPA is: " + new DecimalFormat("0.00").format(result),
                         "result",
                         JOptionPane.PLAIN_MESSAGE);
             }
