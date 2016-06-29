@@ -22,7 +22,7 @@ class PieChart extends JFrame implements ActionListener {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            double radians, dataTotal = model.dataSum();
+            double radians, creditTotal = model.CreditsSum();
             int startAngle = 0;
             int x, y, radius, xCenter, yCenter;
             xCenter = getWidth() / 2;
@@ -31,8 +31,8 @@ class PieChart extends JFrame implements ActionListener {
             x = xCenter - radius;
             y = yCenter - radius;
             updateList();
-            for (int i = 0; i < model.getGpa().length; i++) {
-                int endAngle = (int) (360 * model.getGpa()[i] / dataTotal);
+            for (int i = 0; i < model.getCredits().length; i++) {
+                int endAngle = (int) (360 * model.getCredits()[i] / creditTotal);
                 g.setColor(colorList[i % 5]);
                 g.fillArc(x, y, 2 * radius, 2 * radius, startAngle, endAngle);
                 radians = Math.toRadians(startAngle + endAngle / 2);

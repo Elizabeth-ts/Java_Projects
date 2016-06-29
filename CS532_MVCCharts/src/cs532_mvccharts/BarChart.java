@@ -46,7 +46,7 @@ class BarChart extends JFrame implements ActionListener {
         add(panel);
         setTitle("Bar Chart");
         //setLayout(null);
-        setSize(300, 300);
+        setSize(80* model.getGpa().length, 300);
         setVisible(true);
     }
 

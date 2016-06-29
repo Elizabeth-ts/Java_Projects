@@ -9,8 +9,10 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -23,6 +25,7 @@ public class ChartMain extends JFrame {
     private final JButton jbtPieChartView = new JButton("Pei Chart");
     private final JButton jbtBarChartView = new JButton("Bar Chart");
     private final ChartModel model = new ChartModel();
+    private ChartController controller = null;
 
     public ChartMain() {
         setLayout(new GridLayout(3, 1));
@@ -40,18 +43,32 @@ public class ChartMain extends JFrame {
         jbtController.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ChartController controller = new ChartController(model);
+                controller = new ChartController(model);
             }
         });
         jbtPieChartView.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (controller == null) {
+                    JOptionPane.showMessageDialog(null,
+                            "You must initialize the controller first to generate chart!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 PieChart chart = new PieChart(model);
             }
         });
         jbtBarChartView.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (controller == null) {
+                    JOptionPane.showMessageDialog(null,
+                            "You must initialize the controller first to generate chart!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 BarChart chart = new BarChart(model);
             }
         });

@@ -89,12 +89,12 @@ class ChartModel {
         return credits;
     }
 
-    public double dataSum() {
-        double dataSum = 0.0;
-        for (double d : gpa) {
-            dataSum += d;
+    public double CreditsSum() {
+        double creditsSum = 0.0;
+        for (double d : credits) {
+            creditsSum += d;
         }
-        return dataSum;
+        return creditsSum;
     }
 
     public double calculateAverageGpa() {
